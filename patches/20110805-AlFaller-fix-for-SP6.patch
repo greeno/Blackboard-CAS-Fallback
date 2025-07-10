@@ -1,0 +1,58 @@
+Index: src/edu/nau/blackboard/authentication/BlackboardCasFallback.java
+===================================================================
+--- src/edu/nau/blackboard/authentication/BlackboardCasFallback.java	(revision 44)
++++ src/edu/nau/blackboard/authentication/BlackboardCasFallback.java	(working copy)
+@@ -388,34 +388,33 @@
+ 	 * 
+ 	 * @see blackboard.platform.security.authentication.BaseAuthenticationModule#doLogout(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+ 	 */
+-	public void doLogout(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws BbSecurityException {
+-		// Make sure we do logout. If everything else fails, they will still be logged out of BBLearn.
+-		super.doLogout(request, response);
+-		
+-		// If no CAS Logout, just return to the login page.
+-		if (!casLogoutCompletely)
+-			return;
+-		
+-		// Create CAS logout URL
+-		String redirectUrl = casUrl + "/logout";
+-		if (casRedirectUrl != null && casRedirectUrl.toString().length() != 0){
+-			try {
+-				redirectUrl = redirectUrl + "?url=" + java.net.URLEncoder.encode(casRedirectUrl.toString(),"UTF-8");
+-			} catch (UnsupportedEncodingException e) {
+-				_logger.logFatal(e.getMessage());
+-				throw new BbSecurityException(e.getMessage());
+-			}
+-		}
+-		
+-		// Send the user to the generated logout URL
++
++public void doLogout(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws BbSecurityException {
++	if ( "logout".equals( request.getParameter( "action" ) ) ){
+ 		try {
++		        super.doLogout(request, response);
++		        // If no CAS Logout, just return to the login page.
++		        if (!casLogoutCompletely)
++		                return;
++		        // Create CAS logout URL
++		        String redirectUrl = casUrl + "/logout";
++		        if (casRedirectUrl != null && casRedirectUrl.toString().length() != 0){
++		                try {
++		                        redirectUrl = redirectUrl + "?url=" + java.net.URLEncoder.encode(casRedirectUrl.toString(),"UTF-8");
++		                } catch (UnsupportedEncodingException e) {
++		                        _logger.logFatal(e.getMessage());
++		                        throw new BbSecurityException(e.getMessage());
++		                }
++		        }
+ 			response.sendRedirect(redirectUrl);
+ 		} catch (IOException e) {
+ 			_logger.logFatal(e.getMessage());
+ 			throw new BbSecurityException(e.getMessage());
+ 		}
+ 	}
++}
+ 
++
+ 	/**
+ 	 * This will either draw the login page, or redirect a user to CAS to get a ticket
+ 	 * 

@@ -1,0 +1,51 @@
+Index: src/edu/nau/blackboard/authentication/BlackboardCasFallback.java
+===================================================================
+--- src/edu/nau/blackboard/authentication/BlackboardCasFallback.java    (revision 43)
++++ src/edu/nau/blackboard/authentication/BlackboardCasFallback.java    (working copy)
+@@ -66,6 +66,7 @@
+                "ldap.server_url",
+                "ldap.user",
+                "ldap.password",
++               "ldap.userattrib",
+                // CAS
+                "cas.enabled",
+                "cas.service",
+@@ -93,6 +94,8 @@
+        private static String ldapUsername;
+        // Privileged Lookup Password
+        private static String ldapPassword;
++       // User Attribute
++       private static String ldapUserAttrib;
+        // LDAP Context
+        // Don't use directly. Must be access in a thread safe, synchronized way.
+        private static DirContext _ctx;
+@@ -156,6 +159,8 @@
+                ldapUsername = (String)_config.getProperty("ldap.user");
+                ldapPassword = (String)_config.getProperty("ldap.password");
+
++               ldapUserAttrib = (String)_config.getProperty("ldap.userattrib");
++
+                casEnabled = (Boolean)_config.getProperty("cas.enabled");
+                casService = (URL)_config.getProperty("cas.service");
+                casUrl = (URL)_config.getProperty("cas.url");
+@@ -298,9 +303,9 @@
+                // On to LDAP Authentication.
+                // Step one, find the user and get the users DN using a privileged lookup
+                Attributes matchAttrs = new BasicAttributes(true);
+-               matchAttrs.put(new BasicAttribute("uid",userId));
++               matchAttrs.put(new BasicAttribute(ldapUserAttrib,userId));
+                // The DN is on the result it self
+-               String[] retAttrs = {"uid"};
++               String[] retAttrs = {ldapUserAttrib};
+                NamingEnumeration<SearchResult> searchResults = null;
+                try {
+                        searchResults = getContext().search(ldapBaseSearch, matchAttrs, retAttrs);
+@@ -331,7 +336,7 @@
+                                SearchResult sr = (SearchResult)searchResults.next();
+                                dn = (String)sr.getName();
+                        }else{
+-                               _logger.logInfo("Could not find uid=" + userId + " in LDAP");
++                               _logger.logInfo("Could not find " + ldapUserAttrib + "=" + userId + " in LDAP");
+                                return null;
+                        }
+                } catch (NamingException e) {

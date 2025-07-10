@@ -1,0 +1,47 @@
+<project name="BlackboardCasFallback" default="dist" basedir=".">
+	<description>
+        Blackboard CAS Fallback Authentication Module
+    </description>
+	<!-- set global properties for this build -->
+	<property name="src" location="src"/>
+	<property name="build" location="build"/>
+	<property name="dist"  location="dist"/>
+	
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp/>
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build}"/>
+	</target>
+	
+	<path id="classpath">
+		<pathelement path="${classpath}" />
+		<fileset dir="lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+	<target name="compile" depends="init" description="compile the source ">
+		<mkdir dir="${build}"/>
+		<mkdir dir="${dist}"/>
+		<property name="myclasspath" refid="classpath"/>
+		<javac srcdir="${src}" destdir="${build}">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+	
+	<target name="dist" depends="compile" description="generate the distribution">
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}"/>
+
+		<!-- Put everything in ${build} into the ${dist}/BB9Integration.jar file -->
+		<jar jarfile="${dist}/BlackboardCasFallback.jar" basedir="${build}"/>
+	</target>
+	
+	<target name="clean" description="clean up" >
+		<!-- Delete the ${build} and ${dist} directory trees -->
+		<delete dir="${build}"/>
+		<delete dir="${dist}"/>
+	</target>
+</project>
+	

@@ -1,0 +1,14 @@
+BLACKBOARD CAS FALLBACK INSTALLATION
+
+** Introduction **
+This Blackboard Authentication Module has the ability to use CAS for authentication and also 
+fallback to LDAP and the internal Blackboard DB(rdbms).
+
+** Installation **
+See the following webpage
+http://code.google.com/p/blackboard-cas-fallback/wiki/Installation
+
+** Questions **
+Please use the tools at the Google Code site.
+http://code.google.com/p/blackboard-cas-fallback/
+
